@@ -1,15 +1,11 @@
-import logo from "./logo.svg";
 import "./App.css";
+import React from "react";
+import Registerform from "./component/form";
 
 function App() {
   return (
     <div>
-      <form>
-        <div>Enter Your Name</div>
-        <input type="text"></input>
-        <button>submit!</button>
-        <div></div>
-      </form>
+      <Registerform></Registerform>
     </div>
   );
 }
