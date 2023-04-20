@@ -1,83 +1,80 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from "react";
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, onValue, set } from "firebase/database";
+import NewTask from "./newTask";
+import TaskInfo from "./TaskInfo";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB20_H4K9kWZMd3vH1xSp4GaWA2WSQOE0Y",
+  authDomain: "test-project2-dffb4.firebaseapp.com",
+  databaseURL: "https://project2-707d2-default-rtdb.firebaseio.com",
+  projectId: "test-project2-dffb4",
+  storageBucket: "test-project2-dffb4.appspot.com",
+  messagingSenderId: "960634107139",
+  appId: "1:960634107139:web:15f92b170133c4862ce536",
+};
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
 function Task() {
-  //var tasks = getTasks(name);
-  const [tasks, setTasks] = useState([
-    new singleTask("Sample task", "In progress", "04/21/22")
-  ]);
+  const [name, setName] = useState("");
+  const [info, setInfo] = useState({});
+  const [editInfo, setEdit] = useState({});
 
-  const handleNewTask = () => {
-    const title = document.getElementById("newTitle").value;
-    const status = document.getElementById("newStatus").value;
-    const dueDate = document.getElementById("newDueDate").value;
+  //running one time when page loading
+  useEffect(() => {
+    setName(localStorage.getItem("name"));
+  }, []);
 
-    const newTask = new singleTask(title, status, dueDate);
-    setTasks([...tasks, newTask]);
-  };
+  //
+  useEffect(() => {
+    if (name === "") {
+      return;
+    }
+    const db = getDatabase(app);
+    const starCountRef = ref(db, "user/" + name);
+    onValue(starCountRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data !== null) {
+        setInfo(data);
+        console.log(data);
+        console.log(data.date);
+      }
+      //   updateStarCount(postElement, data);
+    });
+  }, [name]);
+
+  //   const handleSubmit = (key) => {
+  //     const temp = { ...info };
+  //     temp.key = key;
+  //     setEdit(temp);
+  //     // <NewTask info={editInfo}></NewTask>;
+  //     console.log("dsdsk,");
+  //   };
 
   return (
-    <html>
-      <header>Welcome {localStorage.getItem("name")}</header>
-      <p>
-        <form id="newTaskForm">
-          <label htmlFor="newTitle">Title: </label>
-          <input type="text" id="newTitle" name="newTitle" /><br />
-          <label htmlFor="newStatus">Status: </label>
-          <input type="text" id="newStatus" name="newStatus" /><br />
-          <label htmlFor="newDueDate">Due date: </label>
-          <input type="text" id="newDueDate" name="newDueDate" /><br />
-        </form>
-        <button id="newTaskButton" onClick={handleNewTask}>Add new task</button>
-      </p>
-      <body>
-        Your tasks: {makeList(tasks)}
-      </body>
-    </html>
+    <div>
+      {/* <h1>My Tasks</h1>
+      <ul>
+        {Object.keys(info).map((key) => {
+          return (
+            <ul key={key}>
+              <div>Tasks</div>
+              <li>Title: {info[key].title}</li>
+              <li>Description: {info[key].des}</li>
+              <li>Due Date: {info[key].date}</li>
+              <li>Status: {info[key].status}</li>
+              <button onClick={handleSubmit}>Edit</button>
+              <br></br>
+            </ul>
+          );
+        })}
+      </ul>
+      <NewTask></NewTask> */}
+      <TaskInfo info={info}></TaskInfo>
+      <NewTask></NewTask>
+    </div>
   );
 }
-
-function makeList(tasks) {
-  const listItems = tasks.map(task => (
-    <li key={task.title}>
-      <p>
-        {task.title}<br />
-        {task.status}<br />
-        {task.dueDate}<br />
-      </p>
-    </li>
-  ));
-
-  return <ul>{listItems}</ul>;
-}
-
-class singleTask {
-  constructor(title, status, dueDate) {
-    this.title = title;
-    this.status = status;
-    this.dueDate = dueDate;
-  }
-}
-
-/*
-function getTasks(name){
-  let [tasks, setTask] = useState([]);
-
-  db.transaction((tx) => {
-    tx.executeSql(
-      'select * from Task where name = ? ORDER BY ? ASC;',
-      [name,title],
-      (tx, results) => {
-        var temp = [];
-        for (var i = 0; i < results.rows.length; i++) {
-          temp.push(results.rows.item(i));
-        }
-        setTask(temp);
-      }
-    )
-  });
-
-  return tasks;
-}
-*/
 
 export default Task;
