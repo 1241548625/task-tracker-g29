@@ -1,4 +1,8 @@
+import { useEffect } from 'react';
+import { FaTimes} from 'react-icons/fa';
+
 function TaskItem(prop) {
+
   const handleSubmit = () => {};
 
   // check if prop.info has data in it
@@ -10,20 +14,28 @@ function TaskItem(prop) {
     }
   };
 
+  useEffect(() => {
+    console.log(prop.info, '----------bahaer---------------')
+    prop.info.map((item, index) => {
+      console.log(index, '-------------------------------')
+      console.log(item, '-------------------------------')
+    })
+  }, []);
+
   return (
     <div>
       {propInfo() ? (
         <div>
           <h1>My Tasks</h1>
           <ul>
-            {Object.keys(prop.info).map((key) => {
+            {prop.info.map((item, index) => {
               return (
-                <ul key={key}>
+                <ul key={index}>
                   <div>Tasks</div>
-                  <li>Title: {prop.info[key].title}</li>
-                  <li>Description: {prop.info[key].des}</li>
-                  <li>Due Date: {prop.info[key].date}</li>
-                  <li>Status: {prop.info[key].status}</li>
+                  <li>Title: {item.title} <FaTimes style={{color : 'red', cursor : 'pointer'}} onClick={()=>prop.deleteTask(item.title)}/></li>
+                  <li>Description: {item.des}</li>
+                  <li>Due Date: {item.date}</li>
+                  <li>Status: {item.status}</li>
                   <button onClick={handleSubmit}>Edit</button>
                   <br></br>
                 </ul>
@@ -36,6 +48,9 @@ function TaskItem(prop) {
       )}
     </div>
   );
+
+  
+  
 }
 
 export default TaskItem;
