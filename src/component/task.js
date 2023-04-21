@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, onValue, set } from "firebase/database";
+import { getDatabase, ref, onValue, set, remove } from "firebase/database";
 import NewTask from "./newTask";
 import TaskInfo from "./TaskInfo";
 
@@ -26,7 +26,7 @@ function Task() {
     setName(localStorage.getItem("name"));
   }, []);
 
-  //
+  //get data from database
   useEffect(() => {
     if (name === "") {
       return;
@@ -34,8 +34,8 @@ function Task() {
     const db = getDatabase(app);
     const starCountRef = ref(db, "user/" + name);
     onValue(starCountRef, (snapshot) => {
-      const data = Object.values(snapshot.val())
-      console.log(data)
+      const data = snapshot.val();
+      console.log(data);
       if (data !== null) {
         setInfo(data);
         console.log(data);
@@ -53,26 +53,12 @@ function Task() {
   //     console.log("dsdsk,");
   //   };
 
-  const deleteTask = (title) => {
-    console.log(info, 'initilaizing info')
-    const updatedTasks = info.filter(task => task.title !== title);
-    setInfo(updatedTasks);
-    console.log(updatedTasks)
-    // const db = getDatabase(app);
-    // const starCountRef = ref(db, "user/" + name);
-    // onValue(starCountRef, (snapshot) => {
-    //   const data = snapshot.val();
-    //   const updatedTasks = data.filter(task => task.title !== title);
-    //   if (data !== null) {
-    //     setInfo(updatedTasks);
-    //     console.log(data);
-    //     console.log(data.date);
-    //   }
-    //   //   updateStarCount(postElement, data);
-    // });
-    
-    
-}
+  const deleteTask = (task_key) => {
+    console.log(task_key);
+    const db = getDatabase();
+    const taskRef = ref(db, "user/" + name + "/" + task_key);
+    remove(taskRef);
+  };
   return (
     <div>
       {/* <h1>My Tasks</h1>

@@ -1,13 +1,12 @@
-import { useEffect } from 'react';
-import { FaTimes} from 'react-icons/fa';
+import { useEffect } from "react";
+import { FaTimes } from "react-icons/fa";
 
-function TaskItem(prop) {
-
+function TaskItem({ info, deleteTask }) {
   const handleSubmit = () => {};
 
   // check if prop.info has data in it
   const propInfo = () => {
-    if (prop.info === "") {
+    if (info === "") {
       return false;
     } else {
       return true;
@@ -15,11 +14,11 @@ function TaskItem(prop) {
   };
 
   useEffect(() => {
-    console.log(prop.info, '----------bahaer---------------')
-    prop.info.map((item, index) => {
-      console.log(index, '-------------------------------')
-      console.log(item, '-------------------------------')
-    })
+    console.log(info, "----------bahaer---------------");
+    Object.keys(info).map((item, index) => {
+      console.log(index, "-------------------------------");
+      console.log(item, "-------------------------------");
+    });
   }, []);
 
   return (
@@ -28,14 +27,20 @@ function TaskItem(prop) {
         <div>
           <h1>My Tasks</h1>
           <ul>
-            {prop.info.map((item, index) => {
+            {Object.keys(info).map((task_key, index) => {
               return (
                 <ul key={index}>
                   <div>Tasks</div>
-                  <li>Title: {item.title} <FaTimes style={{color : 'red', cursor : 'pointer'}} onClick={()=>prop.deleteTask(item.title)}/></li>
-                  <li>Description: {item.des}</li>
-                  <li>Due Date: {item.date}</li>
-                  <li>Status: {item.status}</li>
+                  <li>
+                    Title: {info[task_key].title}{" "}
+                    <FaTimes
+                      style={{ color: "red", cursor: "pointer" }}
+                      onClick={() => deleteTask(task_key)}
+                    />
+                  </li>
+                  <li>Description: {info[task_key].des}</li>
+                  <li>Due Date: {info[task_key].date}</li>
+                  <li>Status: {info[task_key].status}</li>
                   <button onClick={handleSubmit}>Edit</button>
                   <br></br>
                 </ul>
@@ -48,9 +53,6 @@ function TaskItem(prop) {
       )}
     </div>
   );
-
-  
-  
 }
 
 export default TaskItem;
