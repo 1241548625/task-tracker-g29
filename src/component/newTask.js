@@ -74,6 +74,7 @@ function NewTask({ setShowNewTaskForm, handleModalClose }) {
             onChange={titleChange}
             placeholder="Title"
             style={{ width: "100%" }}
+            required
           ></Form.Control>
         </Form.Group>
         <br></br>
@@ -84,6 +85,7 @@ function NewTask({ setShowNewTaskForm, handleModalClose }) {
             onChange={desChange}
             placeholder="Description"
             style={{ width: "100%" }}
+            required
           ></Form.Control>
         </Form.Group>
         <br></br>
@@ -100,6 +102,7 @@ function NewTask({ setShowNewTaskForm, handleModalClose }) {
             type="date"
             value={enterDate}
             onChange={dateChange}
+            required
           ></Form.Control>
         </Form.Group>
         <br></br>

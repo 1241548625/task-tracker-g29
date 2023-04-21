@@ -12,6 +12,10 @@ function TaskItem({ task, task_key, deleteTask, editTask }) {
   const handleEdit = (event) => {
     event.preventDefault();
     if (showEditForm) {
+      if (newTitle === "" || newDes === "") {
+        alert("This cannot be empty");
+        return;
+      }
       const newData = {
         title: newTitle,
         des: newDes,
@@ -33,6 +37,7 @@ function TaskItem({ task, task_key, deleteTask, editTask }) {
             onChange={(event) => {
               setNewTitle(event.target.value);
             }}
+            required
           />
         ) : (
           <div>
@@ -53,6 +58,7 @@ function TaskItem({ task, task_key, deleteTask, editTask }) {
             onChange={(event) => {
               setNewDes(event.target.value);
             }}
+            required
           />
         ) : (
           task.des
@@ -67,6 +73,7 @@ function TaskItem({ task, task_key, deleteTask, editTask }) {
             onChange={(event) => {
               setNewDueDate(event.target.value);
             }}
+            required
           />
         ) : (
           task.date
