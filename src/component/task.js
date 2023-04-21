@@ -18,7 +18,7 @@ const app = initializeApp(firebaseConfig);
 
 function Task() {
   const [name, setName] = useState("");
-  const [info, setInfo] = useState({});
+  const [info, setInfo] = useState([]);
   const [editInfo, setEdit] = useState({});
 
   //running one time when page loading
@@ -34,7 +34,8 @@ function Task() {
     const db = getDatabase(app);
     const starCountRef = ref(db, "user/" + name);
     onValue(starCountRef, (snapshot) => {
-      const data = snapshot.val();
+      const data = Object.values(snapshot.val())
+      console.log(data)
       if (data !== null) {
         setInfo(data);
         console.log(data);
@@ -52,6 +53,26 @@ function Task() {
   //     console.log("dsdsk,");
   //   };
 
+  const deleteTask = (title) => {
+    console.log(info, 'initilaizing info')
+    const updatedTasks = info.filter(task => task.title !== title);
+    setInfo(updatedTasks);
+    console.log(updatedTasks)
+    // const db = getDatabase(app);
+    // const starCountRef = ref(db, "user/" + name);
+    // onValue(starCountRef, (snapshot) => {
+    //   const data = snapshot.val();
+    //   const updatedTasks = data.filter(task => task.title !== title);
+    //   if (data !== null) {
+    //     setInfo(updatedTasks);
+    //     console.log(data);
+    //     console.log(data.date);
+    //   }
+    //   //   updateStarCount(postElement, data);
+    // });
+    
+    
+}
   return (
     <div>
       {/* <h1>My Tasks</h1>
@@ -71,7 +92,7 @@ function Task() {
         })}
       </ul>
       <NewTask></NewTask> */}
-      <TaskInfo info={info}></TaskInfo>
+      <TaskInfo info={info} deleteTask={deleteTask}></TaskInfo>
       <NewTask></NewTask>
     </div>
   );
