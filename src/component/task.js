@@ -150,50 +150,48 @@ function Task() {
 
   return (
     <Container>
-      <div style={{ width: "70%", margin: "auto", textAlign: "center" }}>
-        <h1>Task Tracker</h1>
-        <Button variant="link" onClick={logout} style={{ float: "right" }}>
-          logout
-        </Button>
-        <br></br>
-        <div style={{ textAlign: "left" }}>
-          <div style={{ width: "80%", margin: "auto" }}>
-            <Button
-              variant="link"
-              onClick={() => {
-                setShowNewTaskForm(!showNewTaskForm);
-              }}
-            >
-              Create Task
-            </Button>
-            <br></br>
-            <br></br>
-            <Modal show={showNewTaskForm} onHide={handleModalClose}>
-              <Modal.Header closeButton>
-                <Modal.Title>Create New Task</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <NewTask
-                  setShowNewTaskForm={setShowNewTaskForm}
-                  handleModalClose={handleModalClose}
-                ></NewTask>
-              </Modal.Body>
-            </Modal>
-          </div>
-        </div>
-        <br></br>
-        {info === null || JSON.stringify(info) === "{}" ? (
-          <></>
-        ) : (
-          <TaskInfo
-            info={sortedData}
-            deleteTask={deleteTask}
-            editTask={editTask}
-            setSortBy={setSortBy}
-          ></TaskInfo>
-        )}
-      </div>
-    </Container>
+  <div style={{ width: "70%", margin: "auto", textAlign: "center" }}>
+    <h1>{name}'s Tasks</h1>
+    <div style={{ display: "inline-block", float: "right" }}>
+      <Button variant="link" onClick={logout} style = {{float:"right"}}>
+        Logout
+      </Button>
+    </div>
+    <div style={{ display: "inline-block", float:"left", }}>
+      <Button
+        variant="link"
+        onClick={() => {
+          setShowNewTaskForm(!showNewTaskForm);
+        }}
+      >
+        Create Task
+      </Button>
+      <Modal show={showNewTaskForm} onHide={handleModalClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Create New Task</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <NewTask
+            setShowNewTaskForm={setShowNewTaskForm}
+            handleModalClose={handleModalClose}
+          ></NewTask>
+        </Modal.Body>
+      </Modal>
+    </div>
+    <br></br>
+    {info === null || JSON.stringify(info) === "{}" ? (
+      <></>
+    ) : (
+      <TaskInfo
+        info={sortedData}
+        deleteTask={deleteTask}
+        editTask={editTask}
+        setSortBy={setSortBy}
+      ></TaskInfo>
+    )}
+  </div>
+</Container>
+
   );
 }
 
