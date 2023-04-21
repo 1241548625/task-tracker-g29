@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 function Registerform() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
+  const [sortBy, setSortBy] = useState("dueDate");
 
   const handleChange = (event) => {
     setName(event.target.value);
@@ -13,7 +14,9 @@ function Registerform() {
   const handleSubmit = (event) => {
     event.preventDefault();
     localStorage.setItem("name", name);
+    localStorage.setItem("sortBy",sortBy)
     setName("");
+    setSortBy("date");
     navigate("/tasks");
   };
 

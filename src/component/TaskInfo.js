@@ -13,6 +13,12 @@ function TaskInfo({ info, deleteTask, editTask }) {
     }
   };
 
+  function setSort(sortBy){
+    localStorage.setItem("sortBy",sortBy);
+    console.log("Now sorting by: "+localStorage.getItem("sortBy"));
+    window.location.reload(false); //refresh page
+  };
+
   useEffect(() => {
     console.log(info, "----------bahaer---------------");
     Object.keys(info).map((item, index) => {
@@ -25,6 +31,17 @@ function TaskInfo({ info, deleteTask, editTask }) {
     <div style={{ width: "80%", margin: "auto" }}>
       {propInfo() ? (
         <div>
+          <h3>Sort by:&nbsp;
+          <button onClick={() => setSort("title")}>
+            Title
+          </button>
+          <button onClick={() => setSort("status")}>
+            Status
+          </button>
+          <button onClick={() => setSort("date")}>
+            Due date
+          </button>
+          </h3>
           {Object.keys(info).map((task_key, index) => {
             return (
               <TaskItem

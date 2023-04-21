@@ -50,17 +50,36 @@ function Task() {
       if (data === null) {
         setInfo({});
       } else {
-        setInfo(data);
+        //converts data obj into sorted array
+        var sortBy = localStorage.getItem("sortBy");
+        var dataArray = Object.entries(data).map(([key, value]) => ({ ...value, key }));
+        dataArray.sort((a, b) => {
+          if (a[sortBy] < b[sortBy]) {
+            return -1;
+          }
+          if (a[sortBy] > b[sortBy]) {
+            return 1;
+          }
+          return 0;
+        });
+        //coverts sorted array to back to obj with original keys
+        var sortedData = dataArray.reduce((acc, curr) => {
+          acc[curr.key] = curr;
+          return acc;
+        }, {});     
+        setInfo(sortedData); 
+        //setInfo(data);
         console.log(data);
       }
     });
   }, [name]);
 
   const deleteTask = (task_key) => {
-    console.log(task_key);
+    console.log("task key: "+task_key);
     const db = getDatabase();
     const taskRef = ref(db, "user/" + name + "/" + task_key);
     remove(taskRef);
+    //window.location.reload(false); //refresh page
   };
 
   const editTask = (task_key, data) => {
@@ -69,6 +88,7 @@ function Task() {
     const db = getDatabase();
     const taskRef = ref(db, "user/" + name + "/" + task_key);
     set(taskRef, data);
+    window.location.reload(false); //refresh page
   };
 
   const logout = (event) => {
