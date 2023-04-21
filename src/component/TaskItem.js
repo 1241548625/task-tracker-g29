@@ -36,16 +36,17 @@ function TaskItem({ task, task_key, deleteTask, editTask }) {
           />
         ) : (
           <div>
+            <h4>
             {task.title}
             <FaTimes
               style={{ color: "red", cursor: "pointer", float: "right" }}
               onClick={() => deleteTask(task_key)}
             />
+            </h4>
           </div>
         )}
       </div>
       <div>
-        Description:{" "}
         {showEditForm ? (
           <input
             type="text"

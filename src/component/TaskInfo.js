@@ -45,6 +45,7 @@ function TaskInfo({ info, deleteTask, editTask, setSortBy }) {
             <button onClick={() => setSort("date")}>Due date</button>
           </h3> */}
           <Container>
+            <ul>
             <Row>
               <Col sm md></Col>
               <Col
@@ -53,10 +54,11 @@ function TaskInfo({ info, deleteTask, editTask, setSortBy }) {
                 lg={2}
                 style={{ padding: "0", margin: "auto" }}
               >
-                <Form.Label>Sort by:</Form.Label>
+                <Form.Label style={{ marginTop: "20px", marginLeft: "20px"}}>Sort by:</Form.Label>
               </Col>
               <Col sm={6} md={4} lg={3}>
                 <Form.Select
+                  style={{ marginTop: "20px"}}
                   value={sortValue}
                   onChange={(event) => setSort(event.target.value)}
                 >
@@ -66,6 +68,7 @@ function TaskInfo({ info, deleteTask, editTask, setSortBy }) {
                 </Form.Select>
               </Col>
             </Row>
+            </ul>
           </Container>
           {Object.keys(info).map((task_key, index) => {
             return (
