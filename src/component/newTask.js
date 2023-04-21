@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { getDatabase, ref, set, push } from "firebase/database";
 
-function NewTask() {
+function NewTask({ setShowNewTaskForm }) {
   const [enterTitle, setEnterTitle] = useState("");
   const [enterDes, setDes] = useState("");
   const [enterDate, setEnterDate] = useState("");
-  const [enterStatus, setStatus] = useState("");
+  const [enterStatus, setStatus] = useState("To-do");
   const [name, setName] = useState("");
 
   //   useEffect(() => {
@@ -57,29 +57,38 @@ function NewTask() {
       status: enterStatus,
       date: enterDate,
     });
+    setShowNewTaskForm(false);
   }
 
   return (
     <div>
       <form onSubmit={submitTask}>
         <div>
-          <label>Title</label>
-          <input type="text" value={enterTitle} onChange={titleChange}></input>
-        </div>
-        <div>
-          <label>Description</label>
-          <input type="text" value={enterDes} onChange={desChange}></input>
-        </div>
-        <div>
-          <label>Status</label>
           <input
             type="text"
-            value={enterStatus}
-            onChange={statusChange}
+            value={enterTitle}
+            onChange={titleChange}
+            placeholder="Title"
+            style={{ width: "100%" }}
           ></input>
         </div>
         <div>
-          <label>Due Date</label>
+          <input
+            type="text"
+            value={enterDes}
+            onChange={desChange}
+            placeholder="Description"
+            style={{ width: "100%" }}
+          ></input>
+        </div>
+        <div>
+          <select onChange={statusChange}>
+            <option value="To-do">To-do</option>
+            <option value="In-Progress">In-Progress</option>
+            <option value="Done">Done</option>
+          </select>
+        </div>
+        <div>
           <input type="date" value={enterDate} onChange={dateChange}></input>
         </div>
         <button type="submit">Submit</button>

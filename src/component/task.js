@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { initializeApp } from "firebase/app";
+import { useNavigate } from "react-router-dom";
+
 import {
   getDatabase,
   ref,
@@ -24,9 +26,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 function Task() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [info, setInfo] = useState([]);
   const [editInfo, setEdit] = useState({});
+  const [showNewTaskForm, setShowNewTaskForm] = useState(false);
 
   //running one time when page loading
   useEffect(() => {
@@ -43,22 +47,14 @@ function Task() {
     onValue(starCountRef, (snapshot) => {
       const data = snapshot.val();
       console.log(data);
-      if (data !== null) {
+      if (data === null) {
+        setInfo({});
+      } else {
         setInfo(data);
         console.log(data);
-        console.log(data.date);
       }
-      //   updateStarCount(postElement, data);
     });
   }, [name]);
-
-  //   const handleSubmit = (key) => {
-  //     const temp = { ...info };
-  //     temp.key = key;
-  //     setEdit(temp);
-  //     // <NewTask info={editInfo}></NewTask>;
-  //     console.log("dsdsk,");
-  //   };
 
   const deleteTask = (task_key) => {
     console.log(task_key);
@@ -75,14 +71,47 @@ function Task() {
     set(taskRef, data);
   };
 
+  const logout = (event) => {
+    event.preventDefault();
+    localStorage.removeItem("name");
+    navigate("/");
+  };
+
+  useEffect(() => {
+    console.log(info);
+  }, [info]);
+
   return (
-    <div>
-      <TaskInfo
-        info={info}
-        deleteTask={deleteTask}
-        editTask={editTask}
-      ></TaskInfo>
-      <NewTask></NewTask>
+    <div style={{ width: "50%", margin: "auto" }}>
+      <h1>Task Tracker</h1>
+      <a href="#" onClick={logout} style={{ float: "right" }}>
+        logout
+      </a>
+      <br></br>
+      <div style={{ width: "80%", margin: "auto" }}>
+        <button
+          onClick={() => {
+            setShowNewTaskForm(!showNewTaskForm);
+          }}
+        >
+          {showNewTaskForm ? "Cancel" : "Create Task"}
+        </button>
+        {showNewTaskForm ? (
+          <NewTask setShowNewTaskForm={setShowNewTaskForm}></NewTask>
+        ) : (
+          <></>
+        )}
+      </div>
+      <br></br>
+      {info === null || JSON.stringify(info) === "{}" ? (
+        <></>
+      ) : (
+        <TaskInfo
+          info={info}
+          deleteTask={deleteTask}
+          editTask={editTask}
+        ></TaskInfo>
+      )}
     </div>
   );
 }

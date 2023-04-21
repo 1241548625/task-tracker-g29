@@ -23,75 +23,74 @@ function TaskItem({ task, task_key, deleteTask, editTask }) {
     setShowEditForm(!showEditForm);
   };
   return (
-    <div style={{ width: "300px" }}>
-      <ul>
-        <div>
-          {showEditForm ? (
-            <input
-              type="text"
-              value={newTitle}
-              onChange={(event) => {
-                setNewTitle(event.target.value);
-              }}
+    <div style={{ width: "100%" }}>
+      <div>
+        {showEditForm ? (
+          <input
+            type="text"
+            value={newTitle}
+            onChange={(event) => {
+              setNewTitle(event.target.value);
+            }}
+          />
+        ) : (
+          <div>
+            {task.title}
+            <FaTimes
+              style={{ color: "red", cursor: "pointer", float: "right" }}
+              onClick={() => deleteTask(task_key)}
             />
-          ) : (
-            <div>
-              {task.title}
-              <FaTimes
-                style={{ color: "red", cursor: "pointer", float: "right" }}
-                onClick={() => deleteTask(task_key)}
-              />
-            </div>
-          )}
-        </div>
-        <li>
-          Description:{" "}
-          {showEditForm ? (
-            <input
-              type="text"
-              value={newDes}
-              onChange={(event) => {
-                setNewDes(event.target.value);
-              }}
-            />
-          ) : (
-            task.des
-          )}
-        </li>
-        <li>
-          Due Date:{" "}
-          {showEditForm ? (
-            <input
-              type="text"
-              value={newDueDate}
-              onChange={(event) => {
-                setNewDueDate(event.target.value);
-              }}
-            />
-          ) : (
-            task.date
-          )}
-        </li>
-        <li>
-          Status:{" "}
-          {showEditForm ? (
-            <input
-              type="text"
-              value={newStatus}
-              onChange={(event) => {
-                setNewStatus(event.target.value);
-              }}
-            />
-          ) : (
-            task.status
-          )}
-        </li>
-        {/* <li>Due Date: {task.date}</li> */}
-        {/* <li>Status: {task.status}</li> */}
-        <button onClick={handleEdit}>{buttonText ? "Save" : "Edit"}</button>
-        <br></br>
-        <hr></hr>
-      </ul>
+          </div>
+        )}
+      </div>
+      <div>
+        Description:{" "}
+        {showEditForm ? (
+          <input
+            type="text"
+            value={newDes}
+            onChange={(event) => {
+              setNewDes(event.target.value);
+            }}
+          />
+        ) : (
+          task.des
+        )}
+      </div>
+      <div>
+        Due Date:{" "}
+        {showEditForm ? (
+          <input
+            type="text"
+            value={newDueDate}
+            onChange={(event) => {
+              setNewDueDate(event.target.value);
+            }}
+          />
+        ) : (
+          task.date
+        )}
+      </div>
+      <div>
+        Status:{" "}
+        {showEditForm ? (
+          <select
+            onChange={(event) => {
+              setNewStatus(event.target.value);
+            }}
+            value={newStatus}
+          >
+            <option value="To-do">To-do</option>
+            <option value="In-Progress">In-Progress</option>
+            <option value="Done">Done</option>
+          </select>
+        ) : (
+          task.status
+        )}
+      </div>
+      <button onClick={handleEdit}>{buttonText ? "Save" : "Edit"}</button>
+      <br></br>
+      <hr></hr>
     </div>
   );
 }

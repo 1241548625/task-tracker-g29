@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { FaTimes } from "react-icons/fa";
 import TaskItem from "./TaskItem";
 
 function TaskInfo({ info, deleteTask, editTask }) {
-  const handleSubmit = () => {};
   const [showEditForm, setShowEditForm] = useState(false);
 
   // check if prop.info has data in it
@@ -15,11 +13,6 @@ function TaskInfo({ info, deleteTask, editTask }) {
     }
   };
 
-  const handleEdit = (e) => {
-    e.preventDefault();
-    setShowEditForm(!showEditForm);
-  };
-
   useEffect(() => {
     console.log(info, "----------bahaer---------------");
     Object.keys(info).map((item, index) => {
@@ -29,23 +22,20 @@ function TaskInfo({ info, deleteTask, editTask }) {
   }, []);
 
   return (
-    <div>
+    <div style={{ width: "80%", margin: "auto" }}>
       {propInfo() ? (
         <div>
-          <h1>My Tasks</h1>
-          <ul>
-            {Object.keys(info).map((task_key, index) => {
-              return (
-                <TaskItem
-                  key={index}
-                  task={info[task_key]}
-                  task_key={task_key}
-                  deleteTask={deleteTask}
-                  editTask={editTask}
-                ></TaskItem>
-              );
-            })}
-          </ul>
+          {Object.keys(info).map((task_key, index) => {
+            return (
+              <TaskItem
+                key={index}
+                task={info[task_key]}
+                task_key={task_key}
+                deleteTask={deleteTask}
+                editTask={editTask}
+              ></TaskItem>
+            );
+          })}
         </div>
       ) : (
         <div></div>
