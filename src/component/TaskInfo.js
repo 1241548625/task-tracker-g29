@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
+import TaskItem from "./TaskItem";
 
-function TaskItem({ info, deleteTask }) {
+function TaskInfo({ info, deleteTask, editTask }) {
   const handleSubmit = () => {};
+  const [showEditForm, setShowEditForm] = useState(false);
 
   // check if prop.info has data in it
   const propInfo = () => {
@@ -11,6 +13,11 @@ function TaskItem({ info, deleteTask }) {
     } else {
       return true;
     }
+  };
+
+  const handleEdit = (e) => {
+    e.preventDefault();
+    setShowEditForm(!showEditForm);
   };
 
   useEffect(() => {
@@ -29,24 +36,16 @@ function TaskItem({ info, deleteTask }) {
           <ul>
             {Object.keys(info).map((task_key, index) => {
               return (
-                <ul key={index}>
-                  <div>Tasks</div>
-                  <li>
-                    Title: {info[task_key].title}{" "}
-                    <FaTimes
-                      style={{ color: "red", cursor: "pointer" }}
-                      onClick={() => deleteTask(task_key)}
-                    />
-                  </li>
-                  <li>Description: {info[task_key].des}</li>
-                  <li>Due Date: {info[task_key].date}</li>
-                  <li>Status: {info[task_key].status}</li>
-                  <button onClick={handleSubmit}>Edit</button>
-                  <br></br>
-                </ul>
+                <TaskItem
+                  key={index}
+                  task={info[task_key]}
+                  task_key={task_key}
+                  deleteTask={deleteTask}
+                  editTask={editTask}
+                ></TaskItem>
               );
             })}
-          </ul>{" "}
+          </ul>
         </div>
       ) : (
         <div></div>
@@ -55,4 +54,4 @@ function TaskItem({ info, deleteTask }) {
   );
 }
 
-export default TaskItem;
+export default TaskInfo;

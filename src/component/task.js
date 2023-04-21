@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, onValue, set, remove } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  remove,
+  update,
+} from "firebase/database";
 import NewTask from "./newTask";
 import TaskInfo from "./TaskInfo";
 
@@ -59,26 +66,22 @@ function Task() {
     const taskRef = ref(db, "user/" + name + "/" + task_key);
     remove(taskRef);
   };
+
+  const editTask = (task_key, data) => {
+    console.log(task_key);
+    console.log(data);
+    const db = getDatabase();
+    const taskRef = ref(db, "user/" + name + "/" + task_key);
+    set(taskRef, data);
+  };
+
   return (
     <div>
-      {/* <h1>My Tasks</h1>
-      <ul>
-        {Object.keys(info).map((key) => {
-          return (
-            <ul key={key}>
-              <div>Tasks</div>
-              <li>Title: {info[key].title}</li>
-              <li>Description: {info[key].des}</li>
-              <li>Due Date: {info[key].date}</li>
-              <li>Status: {info[key].status}</li>
-              <button onClick={handleSubmit}>Edit</button>
-              <br></br>
-            </ul>
-          );
-        })}
-      </ul>
-      <NewTask></NewTask> */}
-      <TaskInfo info={info} deleteTask={deleteTask}></TaskInfo>
+      <TaskInfo
+        info={info}
+        deleteTask={deleteTask}
+        editTask={editTask}
+      ></TaskInfo>
       <NewTask></NewTask>
     </div>
   );
