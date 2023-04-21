@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { getDatabase, ref, set, push } from "firebase/database";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 
-function NewTask({ setShowNewTaskForm }) {
+function NewTask({ setShowNewTaskForm, handleModalClose }) {
   const [enterTitle, setEnterTitle] = useState("");
   const [enterDes, setDes] = useState("");
   const [enterDate, setEnterDate] = useState("");
@@ -47,7 +49,8 @@ function NewTask({ setShowNewTaskForm }) {
   //     date: new Date(enterDate),
   //   };
 
-  function submitTask() {
+  function submitTask(event) {
+    event.preventDefault();
     const db = getDatabase();
     const postListRef = ref(db, "user/" + name);
     const newPostRef = push(postListRef);
@@ -58,41 +61,50 @@ function NewTask({ setShowNewTaskForm }) {
       date: enterDate,
     });
     setShowNewTaskForm(false);
+    handleModalClose();
   }
 
   return (
     <div>
-      <form onSubmit={submitTask}>
-        <div>
-          <input
+      <Form onSubmit={submitTask}>
+        <Form.Group>
+          <Form.Control
             type="text"
             value={enterTitle}
             onChange={titleChange}
             placeholder="Title"
             style={{ width: "100%" }}
-          ></input>
-        </div>
-        <div>
-          <input
-            type="text"
+          ></Form.Control>
+        </Form.Group>
+        <br></br>
+        <Form.Group>
+          <Form.Control
+            type="textarea"
             value={enterDes}
             onChange={desChange}
             placeholder="Description"
             style={{ width: "100%" }}
-          ></input>
-        </div>
-        <div>
-          <select onChange={statusChange}>
+          ></Form.Control>
+        </Form.Group>
+        <br></br>
+        <Form.Group>
+          <Form.Select onChange={statusChange}>
             <option value="To-do">To-do</option>
             <option value="In-Progress">In-Progress</option>
             <option value="Done">Done</option>
-          </select>
-        </div>
-        <div>
-          <input type="date" value={enterDate} onChange={dateChange}></input>
-        </div>
-        <button type="submit">Submit</button>
-      </form>
+          </Form.Select>
+        </Form.Group>
+        <br></br>
+        <Form.Group>
+          <Form.Control
+            type="date"
+            value={enterDate}
+            onChange={dateChange}
+          ></Form.Control>
+        </Form.Group>
+        <br></br>
+        <Button type="submit">Submit</Button>
+      </Form>
     </div>
   );
 }

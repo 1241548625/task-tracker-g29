@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { initializeApp } from "firebase/app";
 import { useNavigate } from "react-router-dom";
+import Container from "react-bootstrap/Container";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 
 import {
   getDatabase,
@@ -29,15 +32,68 @@ function Task() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [info, setInfo] = useState([]);
+  const [sortedData, setSortedData] = useState({});
   const [editInfo, setEdit] = useState({});
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
+  const [sortBy, setSortBy] = useState("");
+  const status_weight = {
+    "To-do": 1,
+    "In-Progress": 2,
+    Done: 3,
+  };
+
+  const compare = (a, b) => {
+    if (a[sortBy].toLowerCase() < b[sortBy].toLowerCase()) {
+      return -1;
+    }
+    if (a[sortBy].toLowerCase() > b[sortBy].toLowerCase()) {
+      return 1;
+    }
+    return 0;
+  };
+
+  const compareStatus = (a, b) => {
+    if (status_weight[a[sortBy]] < status_weight[b[sortBy]]) {
+      return -1;
+    }
+    if (status_weight[a[sortBy]] > status_weight[b[sortBy]]) {
+      return 1;
+    }
+    return 0;
+  };
 
   //running one time when page loading
   useEffect(() => {
     setName(localStorage.getItem("name"));
+    setSortBy(localStorage.getItem("sortBy"));
   }, []);
 
   //get data from database
+  useEffect(() => {
+    if (info === null) {
+      return;
+    }
+    console.log(sortBy);
+    console.log(info);
+    //converts data obj into sorted array
+    let dataArray = Object.entries(info).map(([key, value]) => ({
+      ...value,
+      key,
+    }));
+
+    if (sortBy === "status") {
+      dataArray.sort(compareStatus);
+    } else {
+      dataArray.sort(compare);
+    }
+    //coverts sorted array to back to obj with original keys
+    let sortedData = dataArray.reduce((acc, curr) => {
+      acc[curr.key] = curr;
+      return acc;
+    }, {});
+    setSortedData(sortedData);
+  }, [info, sortBy]);
+
   useEffect(() => {
     if (name === "") {
       return;
@@ -51,34 +107,20 @@ function Task() {
         setInfo({});
       } else {
         //converts data obj into sorted array
-        var sortBy = localStorage.getItem("sortBy");
-        var dataArray = Object.entries(data).map(([key, value]) => ({ ...value, key }));
-        dataArray.sort((a, b) => {
-          if (a[sortBy] < b[sortBy]) {
-            return -1;
-          }
-          if (a[sortBy] > b[sortBy]) {
-            return 1;
-          }
-          return 0;
-        });
-        //coverts sorted array to back to obj with original keys
-        var sortedData = dataArray.reduce((acc, curr) => {
-          acc[curr.key] = curr;
-          return acc;
-        }, {});     
-        setInfo(sortedData); 
-        //setInfo(data);
-        console.log(data);
+        setInfo(data);
       }
     });
   }, [name]);
 
   const deleteTask = (task_key) => {
-    console.log("task key: "+task_key);
-    const db = getDatabase();
-    const taskRef = ref(db, "user/" + name + "/" + task_key);
-    remove(taskRef);
+    // eslint-disable-next-line no-restricted-globals
+    const deleteConfirm = confirm("Are you sure to delete the task?");
+    if (deleteConfirm) {
+      console.log("task key: " + task_key);
+      const db = getDatabase();
+      const taskRef = ref(db, "user/" + name + "/" + task_key);
+      remove(taskRef);
+    }
     //window.location.reload(false); //refresh page
   };
 
@@ -88,7 +130,7 @@ function Task() {
     const db = getDatabase();
     const taskRef = ref(db, "user/" + name + "/" + task_key);
     set(taskRef, data);
-    window.location.reload(false); //refresh page
+    // window.location.reload(false); //refresh page
   };
 
   const logout = (event) => {
@@ -97,42 +139,60 @@ function Task() {
     navigate("/");
   };
 
-  useEffect(() => {
-    console.log(info);
-  }, [info]);
+  const handleModalClose = () => {
+    setShowNewTaskForm(false);
+  };
+
+  // useEffect(() => {
+  //   console.log(info);
+  // }, [info]);
 
   return (
-    <div style={{ width: "50%", margin: "auto" }}>
-      <h1>Task Tracker</h1>
-      <a href="#" onClick={logout} style={{ float: "right" }}>
-        logout
-      </a>
-      <br></br>
-      <div style={{ width: "80%", margin: "auto" }}>
-        <button
-          onClick={() => {
-            setShowNewTaskForm(!showNewTaskForm);
-          }}
-        >
-          {showNewTaskForm ? "Cancel" : "Create Task"}
-        </button>
-        {showNewTaskForm ? (
-          <NewTask setShowNewTaskForm={setShowNewTaskForm}></NewTask>
-        ) : (
+    <Container>
+      <div style={{ width: "70%", margin: "auto", textAlign: "center" }}>
+        <h1>Task Tracker</h1>
+        <Button variant="link" onClick={logout} style={{ float: "right" }}>
+          logout
+        </Button>
+        <br></br>
+        <div style={{ textAlign: "left" }}>
+          <div style={{ width: "80%", margin: "auto" }}>
+            <Button
+              variant="link"
+              onClick={() => {
+                setShowNewTaskForm(!showNewTaskForm);
+              }}
+            >
+              Create Task
+            </Button>
+            <br></br>
+            <br></br>
+            <Modal show={showNewTaskForm} onHide={handleModalClose}>
+              <Modal.Header closeButton>
+                <Modal.Title>Create New Task</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <NewTask
+                  setShowNewTaskForm={setShowNewTaskForm}
+                  handleModalClose={handleModalClose}
+                ></NewTask>
+              </Modal.Body>
+            </Modal>
+          </div>
+        </div>
+        <br></br>
+        {info === null || JSON.stringify(info) === "{}" ? (
           <></>
+        ) : (
+          <TaskInfo
+            info={sortedData}
+            deleteTask={deleteTask}
+            editTask={editTask}
+            setSortBy={setSortBy}
+          ></TaskInfo>
         )}
       </div>
-      <br></br>
-      {info === null || JSON.stringify(info) === "{}" ? (
-        <></>
-      ) : (
-        <TaskInfo
-          info={info}
-          deleteTask={deleteTask}
-          editTask={editTask}
-        ></TaskInfo>
-      )}
-    </div>
+    </Container>
   );
 }
 

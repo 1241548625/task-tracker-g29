@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
+import Button from "react-bootstrap/Button";
 
 function TaskItem({ task, task_key, deleteTask, editTask }) {
   const [showEditForm, setShowEditForm] = useState(false);
@@ -23,7 +24,7 @@ function TaskItem({ task, task_key, deleteTask, editTask }) {
     setShowEditForm(!showEditForm);
   };
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: "100%", textAlign: "left" }}>
       <div>
         {showEditForm ? (
           <input
@@ -61,7 +62,7 @@ function TaskItem({ task, task_key, deleteTask, editTask }) {
         Due Date:{" "}
         {showEditForm ? (
           <input
-            type="text"
+            type="date"
             value={newDueDate}
             onChange={(event) => {
               setNewDueDate(event.target.value);
@@ -88,7 +89,9 @@ function TaskItem({ task, task_key, deleteTask, editTask }) {
           task.status
         )}
       </div>
-      <button onClick={handleEdit}>{buttonText ? "Save" : "Edit"}</button>
+      <div style={{ float: "right" }}>
+        <Button onClick={handleEdit}>{buttonText ? "Save" : "Edit"}</Button>
+      </div>
       <br></br>
       <hr></hr>
     </div>

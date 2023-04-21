@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import TaskItem from "./TaskItem";
+import Form from "react-bootstrap/Form";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
-function TaskInfo({ info, deleteTask, editTask }) {
-  const [showEditForm, setShowEditForm] = useState(false);
+function TaskInfo({ info, deleteTask, editTask, setSortBy }) {
+  const [sortValue, setSortValue] = useState("");
 
   // check if prop.info has data in it
   const propInfo = () => {
@@ -13,39 +17,60 @@ function TaskInfo({ info, deleteTask, editTask }) {
     }
   };
 
-  function setSort(sortBy){
-    localStorage.setItem("sortBy",sortBy);
-    console.log("Now sorting by: "+localStorage.getItem("sortBy"));
-    window.location.reload(false); //refresh page
-  };
+  function setSort(sortBy) {
+    localStorage.setItem("sortBy", sortBy);
+    setSortBy(sortBy);
+    setSortValue(sortBy);
+    console.log("Now sorting by: " + localStorage.getItem("sortBy"));
+    // window.location.reload(false); //refresh page
+  }
 
   useEffect(() => {
-    console.log(info, "----------bahaer---------------");
-    Object.keys(info).map((item, index) => {
-      console.log(index, "-------------------------------");
-      console.log(item, "-------------------------------");
-    });
+    // console.log(info, "----------bahaer---------------");
+    // Object.keys(info).map((item, index) => {
+    //   console.log(index, "-------------------------------");
+    //   console.log(item, "-------------------------------");
+    // });
+    setSortValue(localStorage.getItem("sortBy"));
   }, []);
 
   return (
     <div style={{ width: "80%", margin: "auto" }}>
       {propInfo() ? (
         <div>
-          <h3>Sort by:&nbsp;
-          <button onClick={() => setSort("title")}>
-            Title
-          </button>
-          <button onClick={() => setSort("status")}>
-            Status
-          </button>
-          <button onClick={() => setSort("date")}>
-            Due date
-          </button>
-          </h3>
+          {/* <h3>
+            Sort by:&nbsp;
+            <button onClick={() => setSort("title")}>Title</button>
+            <button onClick={() => setSort("status")}>Status</button>
+            <button onClick={() => setSort("date")}>Due date</button>
+          </h3> */}
+          <Container>
+            <Row>
+              <Col sm md></Col>
+              <Col
+                sm={4}
+                md={3}
+                lg={2}
+                style={{ padding: "0", margin: "auto" }}
+              >
+                <Form.Label>Sort by:</Form.Label>
+              </Col>
+              <Col sm={6} md={4} lg={3}>
+                <Form.Select
+                  value={sortValue}
+                  onChange={(event) => setSort(event.target.value)}
+                >
+                  <option value="title">Title</option>
+                  <option value="status">Status</option>
+                  <option value="date">Date</option>
+                </Form.Select>
+              </Col>
+            </Row>
+          </Container>
           {Object.keys(info).map((task_key, index) => {
             return (
               <TaskItem
-                key={index}
+                key={task_key}
                 task={info[task_key]}
                 task_key={task_key}
                 deleteTask={deleteTask}
